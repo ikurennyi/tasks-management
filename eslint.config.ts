@@ -21,15 +21,15 @@ export default defineConfigWithVueTs(
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
   },
 
-  pluginVue.configs['flat/essential'],
+  pluginVue.configs['flat/recommended'],
   vueTsConfigs.recommended,
-  
+
   {
     ...pluginCypress.configs.recommended,
     files: [
       '**/__tests__/*.{cy,spec}.{js,ts,jsx,tsx}',
       'cypress/e2e/**/*.{cy,spec}.{js,ts,jsx,tsx}',
-      'cypress/support/**/*.{js,ts,jsx,tsx}'
+      'cypress/support/**/*.{js,ts,jsx,tsx}',
     ],
   },
   skipFormatting,
