@@ -1,13 +1,18 @@
 import './assets/main.css'
-
-import store from './store/index'
+import 'vuetify/styles'
 
 import { createApp } from 'vue'
-import App from './App.vue'
+import { createVuetify } from 'vuetify'
+
+import store from './store/index'
 import router from './router'
 
-const app = createApp(App)
+import App from './App.vue'
 
+const app = createApp(App)
+const vuetify = createVuetify()
+
+app.use(vuetify)
 app.use(store)
 app.use(router)
 
