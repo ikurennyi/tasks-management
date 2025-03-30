@@ -10,7 +10,11 @@ import router from './router'
 import App from './App.vue'
 
 const app = createApp(App)
-const vuetify = createVuetify()
+const vuetify = createVuetify({
+  theme: {
+    defaultTheme: 'light',
+  },
+})
 
 app.use(vuetify)
 app.use(store)
