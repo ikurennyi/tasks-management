@@ -11,7 +11,10 @@ export interface ProjectsStore {
 }
 
 // TODO: [delete]: for the testing purposes only
-const tempProjectsList = [{ id: '1', title: 'First project' }]
+const tempProjectsList = [
+  { id: '1', title: 'First project' },
+  { id: '2', title: 'Second project' },
+]
 
 const projectsStore: Module<ProjectsStore, RootStore> = {
   namespaced: true,

@@ -1,17 +1,24 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { useStore } from 'vuex'
-import { computed } from 'vue'
 
-import type { RootStore } from '@/store'
-import HomeView from './views/HomeView.vue'
-
-const store = useStore<RootStore>()
-const projectsList = computed(() => store.getters['projects/list'])
+import { ROUTES } from './types/routes'
 </script>
 
 <template>
-  <HomeView />
-  {{ projectsList }}
-  <RouterView />
+  <v-app>
+    <v-app-bar class="d-flex align-center justify-space-between">
+      <v-app-bar-title>
+        <div>
+          Tasks Management App |
+          <RouterLink :to="{ name: ROUTES.PROJECTS_LIST.name }">Projects</RouterLink>
+        </div>
+      </v-app-bar-title>
+    </v-app-bar>
+
+    <v-main>
+      <div class="py-4">
+        <RouterView />
+      </div>
+    </v-main>
+  </v-app>
 </template>
