@@ -3,6 +3,17 @@ interface Route {
   name: string
 }
 
+import {
+  PROJECTS_LIST_PATH,
+  NEW_PROJECT_PATH,
+  PROJECT_DETAILS_PATH,
+  TASK_FORM_PATH,
+  TASK_NEW_PATH,
+  EDIT_TASK_PATH,
+  NOT_FOUND_PATH,
+  EDIT_PROJECT_PATH,
+} from '@/config'
+
 interface Routes {
   readonly PROJECTS_LIST: Route
   readonly NEW_PROJECT: Route
@@ -16,35 +27,36 @@ interface Routes {
 
 export const ROUTES: Routes = Object.freeze({
   PROJECTS_LIST: {
-    path: '/',
+    path: PROJECTS_LIST_PATH,
     name: 'projects',
   },
   NEW_PROJECT: {
-    path: '/projects/new',
+    path: NEW_PROJECT_PATH,
     name: 'newProject',
   },
   EDIT_PROJECT: {
-    path: 'edit',
+    path: EDIT_PROJECT_PATH,
     name: 'editProject',
   },
   PROJECT_DETAILS: {
-    path: '/projects/:projectId',
+    path: PROJECT_DETAILS_PATH,
     name: 'projectDetails',
   },
   TASK_FORM: {
-    path: 'tasks/:taskId',
+    path: TASK_FORM_PATH,
     name: 'task',
   },
   TASK_NEW: {
-    path: 'tasks/new',
+    path: TASK_NEW_PATH,
     name: 'taskNew',
   },
   EDIT_TASK: {
-    path: 'tasks/:taskId/edit',
+    path: EDIT_TASK_PATH,
     name: 'taskEdit',
   },
   NOT_FOUND: {
-    path: '/:pathMatch(.*)*',
+    path: NOT_FOUND_PATH,
     name: 'not-found',
   },
 } as const)
+export type RouteNames = Routes[keyof Routes]['name']

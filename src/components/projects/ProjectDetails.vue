@@ -1,52 +1,68 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { type Ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 import { ROUTES } from '@/types/routes'
 import type { RootStore } from '@/store'
-import { computed } from 'vue'
+import type { Project } from '@/entities/project'
+import TasksList from '@/components/tasks/TasksList.vue'
 
-const { projectId } = useRoute().params
 const store = useStore<RootStore>()
-const tasksList = computed(() => store.getters['tasks/list'])
+
+const router = useRouter()
+const route = useRoute()
+
+const projectId = route.params.projectId as string
+const project: Ref<Project | null> = computed(() => store.getters['projects/current'])
+
+const deleteProject = async () => {
+  const confirmationText =
+    'This action will remove project and all corresponding tasks. Are you sure you want to delete it?'
+  if (window.confirm(confirmationText)) {
+    await store.dispatch('projects/deleteProject', +projectId)
+    router.push({ name: ROUTES.PROJECTS_LIST.name })
+  }
+}
+
+onMounted(async () => {
+  if (!project.value) {
+    await store.dispatch('projects/getById', projectId)
+  }
+})
 </script>
 
 <template>
   <div>
-    <h1>Project Details</h1>
+    <div class="d-flex align-top justify-space-between mb-6">
+      <h2>{{ project?.title }}</h2>
 
-    <v-btn class="my-4" @click.prevent="$router.push(ROUTES.PROJECTS_LIST.path)">
-      back to the Projects List
-    </v-btn>
-
-    <h3>Project ID: {{ $route.params.projectId }}</h3>
-
-    <v-btn
-      class="my-4"
-      @click="$router.push({ name: ROUTES.EDIT_PROJECT.name, params: { projectId } })"
-    >
-      Edit Project
-    </v-btn>
-
-    <h2 class="my-4">Tasks list:</h2>
-
-    <ul>
-      <li v-for="(task, index) in tasksList" :key="index" class="my-4">
-        <h3>{{ task.title }}</h3>
-        <div><strong>Priority:</strong> {{ task.priority }}</div>
-        <div><strong>Status:</strong> {{ task.status }}</div>
+      <div class="d-flex ga-4 pt-2">
+        <v-btn
+          v-if="false"
+          variant="tonal"
+          color="secondary"
+          @click.prevent="$router.push(ROUTES.PROJECTS_LIST.path)"
+        >
+          back to the Projects List
+        </v-btn>
         <v-btn
           variant="outlined"
-          @click="$router.push({ name: ROUTES.EDIT_TASK.name, params: { taskId: task.id } })"
-          >Edit Task</v-btn
+          color="primary"
+          @click="$router.push({ name: ROUTES.EDIT_PROJECT.name, params: { projectId } })"
         >
-        <br />
-      </li>
-    </ul>
-    <v-btn class="mt-4" @click="$router.push({ name: ROUTES.TASK_NEW.name })">Add new Task</v-btn>
+          Edit
+        </v-btn>
+        <v-btn variant="outlined" @click="deleteProject">Delete Project</v-btn>
+      </div>
+    </div>
+
+    <div v-if="!project" class="d-flex align-center flex-column">
+      <h2 class="mb-6">Loading project...</h2>
+    </div>
+
+    <TasksList :project-id />
   </div>
 
   <RouterView />
 </template>
-
-<style scoped></style>

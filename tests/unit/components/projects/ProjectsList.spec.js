@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { mountComponent } from '@tests/helpers'
+import { mountComponent } from '@tests/helpers/mount-component'
 
-import ProjectsList from '../../src/components/projects/ProjectsList.vue'
+import ProjectsList from '@/components/projects/ProjectsList.vue'
 
 describe('ProjectsList component', () => {
   let wrapper

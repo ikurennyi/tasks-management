@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
-import projects, { type ProjectsStore } from './projects'
-import tasks, { type TasksStore } from './tasks'
+import projects, { type ProjectsStore } from './modules/projects'
+import tasks, { type TasksStore } from './modules/tasks'
 
 export interface RootStore {
   project: ProjectsStore

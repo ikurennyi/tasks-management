@@ -54,6 +54,8 @@ npm run lint
 
 2. All routes related to forms are kinda duplicated and can be replaced with redirects on improvements stage. However, for the simplicity and current consistency with types they was left the same for the moment.
 
+3. The `userId` field for project was left for potential future updates with the router guards.
+
 _As this is not a final version of the application some "tasks" will be postponed._
 
 ### TODO:

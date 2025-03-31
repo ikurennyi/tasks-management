@@ -34,9 +34,7 @@ function toggleTheme() {
       </v-app-bar>
 
       <v-main>
-        <div class="py-4">
-          <RouterView />
-        </div>
+        <RouterView />
       </v-main>
     </v-app>
   </v-theme-provider>
