@@ -28,9 +28,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/components/projects/ProjectForm.vue'),
       },
       {
-        path: ROUTES.TASK_FORM.path,
-        name: ROUTES.TASK_FORM.name,
-        component: () => import('@/components/tasks/TaskForm.vue'),
+        path: ROUTES.TASK.path,
+        name: ROUTES.TASK.name,
+        component: () => import('@/components/tasks/TaskView.vue'),
       },
       {
         path: ROUTES.TASK_NEW.path,

@@ -7,7 +7,7 @@ import {
   PROJECTS_LIST_PATH,
   NEW_PROJECT_PATH,
   PROJECT_DETAILS_PATH,
-  TASK_FORM_PATH,
+  TASK_PATH,
   TASK_NEW_PATH,
   EDIT_TASK_PATH,
   NOT_FOUND_PATH,
@@ -19,7 +19,7 @@ interface Routes {
   readonly NEW_PROJECT: Route
   readonly EDIT_PROJECT: Route
   readonly PROJECT_DETAILS: Route
-  readonly TASK_FORM: Route
+  readonly TASK: Route
   readonly TASK_NEW: Route
   readonly EDIT_TASK: Route
   readonly NOT_FOUND: Route
@@ -42,8 +42,8 @@ export const ROUTES: Routes = Object.freeze({
     path: PROJECT_DETAILS_PATH,
     name: 'projectDetails',
   },
-  TASK_FORM: {
-    path: TASK_FORM_PATH,
+  TASK: {
+    path: TASK_PATH,
     name: 'task',
   },
   TASK_NEW: {
