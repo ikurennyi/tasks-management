@@ -3,6 +3,8 @@ import type { RootStore } from '@/store/index'
 import { getTasks } from '@/services/apiService'
 import { PRIORITIES, STATUSES, type Priority, type Status } from '@/entities/task'
 
+const LOADING_STARTED = 'loadingStarted'
+const LOADING_STOPPED = 'loadingStopped'
 const SET_TASKS_DATA = 'setTasksData'
 const DELETE_TASK = 'deleteTask'
 const DELETE_TASKS = 'deleteTasks'
@@ -13,7 +15,7 @@ const RESET_FILTERS = 'resetFilters'
 export const TASKS_FILTERS = Object.values(STATUSES)
 export const DEFAULT_PRIORITY = PRIORITIES.HIGH
 interface Task {
-  id: string
+  id: number
   title: string
   description: string
   status: string
@@ -23,6 +25,7 @@ interface Task {
 
 export interface TasksStore {
   tasksByProjectId: Record<string, Task[]>
+  isLoadingTasks: boolean
   filters: Status[]
   priorityOrder: Priority
 }
@@ -30,11 +33,18 @@ export interface TasksStore {
 const tasksStore: Module<TasksStore, RootStore> = {
   namespaced: true,
   state: {
+    isLoadingTasks: false,
     tasksByProjectId: {},
     filters: TASKS_FILTERS,
     priorityOrder: DEFAULT_PRIORITY,
   },
   mutations: {
+    [LOADING_STARTED](state) {
+      state.isLoadingTasks = true
+    },
+    [LOADING_STOPPED](state) {
+      state.isLoadingTasks = false
+    },
     [SET_TASKS_DATA](state, { tasksList, projectId }) {
       state.tasksByProjectId[projectId] = tasksList
     },
@@ -58,9 +68,22 @@ const tasksStore: Module<TasksStore, RootStore> = {
     },
   },
   actions: {
+    addIsLoading({ commit }) {
+      commit(LOADING_STARTED)
+    },
+    removeIsLoading({ commit }) {
+      commit(LOADING_STOPPED)
+    },
     async getTasksData({ commit }, projectId: number) {
-      const tasksList = await getTasks(projectId)
-      commit(SET_TASKS_DATA, { tasksList, projectId })
+      commit(LOADING_STARTED)
+      try {
+        const tasksList = await getTasks(projectId)
+        commit(SET_TASKS_DATA, { tasksList, projectId })
+      } catch (error) {
+        console.error('[Error]: fetching tasks: ', error)
+      } finally {
+        commit(LOADING_STOPPED)
+      }
     },
     async deleteTaskById({ commit }, { taskId, projectId }) {
       commit(DELETE_TASK, { taskId, projectId })
@@ -79,6 +102,7 @@ const tasksStore: Module<TasksStore, RootStore> = {
     },
   },
   getters: {
+    isLoading: (state): boolean => state.isLoadingTasks,
     getFilters: (state) => state.filters,
     getPriorityOrder: (state) => state.priorityOrder,
     getTasksByProjectId:

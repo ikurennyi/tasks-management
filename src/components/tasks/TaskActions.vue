@@ -9,7 +9,7 @@ import DeleteIcon from '@/components/icons/DeleteIcon.vue'
 const { id, projectId } = defineProps<{ id: number; projectId: string }>()
 const store = useStore<RootStore>()
 
-const deleteTask = (taskId: string) =>
+const deleteTask = (taskId: number) =>
   store.dispatch('tasks/deleteTaskById', { taskId: +taskId, projectId: +projectId })
 </script>
 

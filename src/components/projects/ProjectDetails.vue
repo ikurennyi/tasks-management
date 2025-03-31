@@ -25,6 +25,7 @@ const deleteProject = async () => {
   }
 }
 
+const isLoading = computed(() => store.getters['projects/isLoading'])
 onMounted(async () => {
   if (!project.value) {
     await store.dispatch('projects/getById', projectId)
@@ -57,7 +58,7 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div v-if="!project" class="d-flex align-center flex-column">
+    <div v-if="isLoading" class="d-flex align-center flex-column">
       <h2 class="mb-6">Loading project...</h2>
     </div>
 

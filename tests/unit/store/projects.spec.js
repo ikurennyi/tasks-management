@@ -8,7 +8,7 @@ import { createProjectsStore } from '../helpers/store-factory'
 import { getProjects, getProjectById } from '@/services/apiService'
 vi.mock('@/services/apiService', { spy: true })
 
-describe('Products store', () => {
+describe('Projects store', () => {
   describe('initial state', () => {
     let state
 
@@ -44,6 +44,16 @@ describe('Products store', () => {
   })
 
   describe('actions', () => {
+    test('isLoadingProject', () => {
+      const store = createProjectsStore({})
+      store.dispatch('projects/addIsLoading')
+
+      expect(store.state.projects.isLoadingProject).toBe(true)
+
+      store.dispatch('projects/removeIsLoading')
+      expect(store.state.projects.isLoadingProject).toBe(false)
+    })
+
     test('setCurrentProject', () => {
       const store = createProjectsStore({})
 

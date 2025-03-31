@@ -67,6 +67,16 @@ describe('Tasks store', () => {
   })
 
   describe('actions', () => {
+    test('isLoadingProject', () => {
+      const store = createTasksStore({})
+      store.dispatch('tasks/addIsLoading')
+
+      expect(store.state.tasks.isLoadingTasks).toBe(true)
+
+      store.dispatch('tasks/removeIsLoading')
+      expect(store.state.tasks.isLoadingTasks).toBe(false)
+    })
+
     test('getTasksData', async () => {
       const tasks = tasksList[projectId]
       const store = createTasksStore({ tasksByProjectId: {} })

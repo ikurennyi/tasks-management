@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, type Ref } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 import type { RootStore } from '@/store'
 import { PRIORITIES, PRIORITY_ORDER, type Priority, type Task } from '@/entities/task'
@@ -8,9 +9,12 @@ import TaskStatus from '@/components/tasks/TaskStatus.vue'
 import TaskActions from '@/components/tasks/TaskActions.vue'
 import TaskPriority from '@/components/tasks/TaskPriority.vue'
 import TasksControls from '@/components/tasks/TasksControls.vue'
+import NoEntries from '@/shared/ui/NoEntries.vue'
 import { formatDate } from '@/shared/lib/ui'
+import { ROUTES } from '@/types/routes'
 
 const store = useStore<RootStore>()
+const router = useRouter()
 
 interface Props {
   projectId: string
@@ -21,6 +25,7 @@ const { projectId } = defineProps<Props>()
 const statusFilter = computed(() => store.getters['tasks/getFilters'])
 const priorityModel: Ref<Priority> = computed(() => store.getters['tasks/getPriorityOrder'])
 
+const isLoading = computed(() => store.getters['tasks/isLoading'])
 const hasTasks = computed(() => store.getters['tasks/hasTasks'](projectId))
 const tasksList: Ref<Task[]> = computed(() => store.getters['tasks/getTasksByProjectId'](projectId))
 
@@ -38,8 +43,8 @@ function sortTasks(): Task[] {
 
 const sortedTasks: Ref<Task[]> = computed(() => sortTasks())
 
-const showTask = () => {
-  alert('show task')
+const showTask = (taskId: number) => {
+  router.push({ name: ROUTES.TASK.name, params: { projectId, taskId } })
 }
 
 onMounted(() => {
@@ -52,15 +57,14 @@ onUnmounted(() => store.dispatch('tasks/resetFilters'))
 </script>
 
 <template>
-  <div v-if="!hasTasks" class="d-flex align-center flex-column">
+  <div v-if="isLoading" class="d-flex align-center flex-column">
     <h2 class="mb-6">Loading tasks...</h2>
     <v-progress-linear :height="10" rounded color="primary" indeterminate></v-progress-linear>
   </div>
-
   <div v-else>
     <TasksControls />
 
-    <v-table density="default" hover>
+    <v-table v-if="hasTasks" density="default" hover>
       <thead>
         <tr>
           <th class="text-left">ID</th>
@@ -77,7 +81,7 @@ onUnmounted(() => store.dispatch('tasks/resetFilters'))
           :key="id"
           v-ripple
           cursor-pointer
-          @click="showTask"
+          @click="showTask(id)"
         >
           <td>{{ id }}</td>
           <td>{{ title }}</td>
@@ -88,6 +92,8 @@ onUnmounted(() => store.dispatch('tasks/resetFilters'))
         </tr>
       </tbody>
     </v-table>
+
+    <NoEntries v-else item="tasks" button-text="ADD NEW TASK" />
   </div>
 </template>
 
