@@ -9,9 +9,9 @@ import TaskStatus from '@/components/tasks/TaskStatus.vue'
 import TaskActions from '@/components/tasks/TaskActions.vue'
 import TaskPriority from '@/components/tasks/TaskPriority.vue'
 import TasksControls from '@/components/tasks/TasksControls.vue'
-import NoEntries from '@/shared/ui/NoEntries.vue'
 import { formatDate } from '@/shared/lib/ui'
 import { ROUTES } from '@/types/routes'
+import AppLoading from '@/shared/ui/AppLoading.vue'
 
 const store = useStore<RootStore>()
 const router = useRouter()
@@ -57,10 +57,8 @@ onUnmounted(() => store.dispatch('tasks/resetFilters'))
 </script>
 
 <template>
-  <div v-if="isLoading" class="d-flex align-center flex-column">
-    <h2 class="mb-6">Loading tasks...</h2>
-    <v-progress-linear :height="10" rounded color="primary" indeterminate></v-progress-linear>
-  </div>
+  <AppLoading v-if="isLoading" />
+
   <div v-else>
     <TasksControls />
 

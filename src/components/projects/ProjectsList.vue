@@ -6,7 +6,6 @@ import { useRouter } from 'vue-router'
 import type { RootStore } from '@/store'
 import { ROUTES } from '@/types/routes'
 import type { Project } from '@/entities/project'
-import NoEntries from '@/shared/ui/NoEntries.vue'
 
 const router = useRouter()
 const store = useStore<RootStore>()
@@ -36,10 +35,7 @@ const fetchProjects = async () => await store.dispatch('projects/setProjectsData
       </div>
     </div>
 
-    <div v-if="isLoading" class="d-flex align-center flex-column">
-      <h2 class="mb-6">Loading...</h2>
-      <v-progress-linear :height="10" rounded color="primary" indeterminate></v-progress-linear>
-    </div>
+    <AppLoading v-if="isLoading" />
 
     <v-row v-else-if="hasProjects" class="mt-2">
       <v-col v-for="(project, index) in projectsList" :key="index" cols="12" md="4">
