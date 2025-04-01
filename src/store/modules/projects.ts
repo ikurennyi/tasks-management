@@ -2,8 +2,8 @@ import type { Module } from 'vuex'
 
 import type { RootStore } from '../index'
 
-import { type Project } from '@/entities/project'
-import { getProjectById, getProjects } from '@/services/apiService'
+import { type Project, type RawProject } from '@/entities/project'
+import { createProject, getProjectById, getProjects, updateProject } from '@/services/apiProjects'
 
 export interface ProjectsStore {
   isLoadingProject: boolean
@@ -16,6 +16,8 @@ const LOADING_STOPPED = 'loadingStopped'
 const SET_CURRENT_PROJECT = 'setCurrentProject'
 const SET_PROJECTS_DATA = 'setProjectsData'
 const DELETE_PROJECT = 'deleteProject'
+const CREATE_PROJECT = 'saveProject'
+const UPDATE_PROJECT = 'updateProject'
 
 const projectsStore: Module<ProjectsStore, RootStore> = {
   namespaced: true,
@@ -40,6 +42,17 @@ const projectsStore: Module<ProjectsStore, RootStore> = {
     [DELETE_PROJECT](state, projectId: number): void {
       state.projectsList = state.projectsList.filter((p) => p.id !== projectId)
     },
+    [CREATE_PROJECT](state, project) {
+      state.projectsList.push(project)
+    },
+    [UPDATE_PROJECT](state, updatedProject: Project): void {
+      const index = state.projectsList.findIndex((p: Project) => p.id === updatedProject.id)
+      if (index >= 0) {
+        state.projectsList[index] = updatedProject
+      } else {
+        state.projectsList.push(updatedProject)
+      }
+    },
   },
   actions: {
     addIsLoading({ commit }) {
@@ -62,9 +75,6 @@ const projectsStore: Module<ProjectsStore, RootStore> = {
         commit(LOADING_STOPPED)
       }
     },
-    findBydId({ state }, projectId: number): Project | null {
-      return state.projectsList.filter((p) => p.id === projectId)[0] || null
-    },
     async getById({ state }, projectId: number): Promise<void> {
       const project = await getProjectById(projectId)
 
@@ -77,11 +87,40 @@ const projectsStore: Module<ProjectsStore, RootStore> = {
       await dispatch('tasks/deleteTasksByProjectId', projectId, { root: true })
       commit(DELETE_PROJECT, projectId)
     },
+    async createProject({ commit }, rawProject: RawProject): Promise<Project | Error> {
+      try {
+        const project = await createProject(rawProject)
+        if (!project) {
+          throw new Error('[Error] Project was not created')
+        }
+
+        commit(CREATE_PROJECT, project)
+        return project
+      } catch (error) {
+        console.error('[Error]: Creating project failed with error ', error)
+        return Promise.reject(error)
+      }
+    },
+    async updateProject({ commit }, rawProject): Promise<Project | Error> {
+      try {
+        const project = await updateProject(rawProject)
+        if (!project) {
+          throw new Error('[Error]: Updating project failed with error ')
+        }
+        commit(UPDATE_PROJECT, project)
+        return project
+      } catch (error) {
+        console.error('[Error]: Updating project failed with error ', error)
+        return Promise.reject(error)
+      }
+    },
   },
   getters: {
     isLoading: (state): boolean => state.isLoadingProject,
     list: (state): Project[] | [] => state.projectsList,
     current: (state): Project | null => state.currentProject,
+    findProjectById: (state) => (projectId: number) =>
+      state.projectsList.find((p: Project) => p.id === projectId),
   },
 }
 

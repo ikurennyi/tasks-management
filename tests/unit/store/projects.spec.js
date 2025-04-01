@@ -5,8 +5,8 @@ import projectsStore from '@/store/modules/projects.ts'
 import { project } from '../helpers/mocks/projects'
 import { createProjectsStore } from '../helpers/store-factory'
 
-import { getProjects, getProjectById } from '@/services/apiService'
-vi.mock('@/services/apiService', { spy: true })
+import { getProjects, getProjectById } from '@/services/apiProjects'
+vi.mock('@/services/apiProjects', { spy: true })
 
 describe('Projects store', () => {
   describe('initial state', () => {
@@ -41,6 +41,22 @@ describe('Projects store', () => {
       const list = store.getters['projects/list']
       expect(list).toEqual([project])
     })
+
+    test('findProjectById with existing project', async () => {
+      const state = { projectsList: [project] }
+      const store = createProjectsStore(state)
+
+      const res = await store.getters['projects/findProjectById'](project.id)
+      expect(res.id).toEqual(project.id)
+    })
+
+    test('findProjectById without projects', async () => {
+      const state = { projectsList: [] }
+      const store = createProjectsStore(state)
+
+      const res = await store.getters['projects/findProjectById'](project.id)
+      expect(res).toBeUndefined()
+    })
   })
 
   describe('actions', () => {
@@ -70,22 +86,6 @@ describe('Projects store', () => {
       const { projectsList } = store.state.projects
       expect(projectsList).toHaveLength(2)
       expect(projectsList[0]).toMatchObject(project)
-    })
-
-    test('findBydId with existing project', async () => {
-      const state = { projectsList: [project] }
-      const store = createProjectsStore(state)
-
-      const res = await store.dispatch('projects/findBydId', project.id)
-      expect(res.id).toEqual(project.id)
-    })
-
-    test('findBydId without projects', async () => {
-      const state = { projectsList: [] }
-      const store = createProjectsStore(state)
-
-      const res = await store.dispatch('projects/findBydId', project.id)
-      expect(res).toBeNull()
     })
 
     test('getById', async () => {

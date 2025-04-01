@@ -13,3 +13,5 @@ export interface Project {
   description: string
   userId: number
 }
+
+export type RawProject = Omit<Project, 'id' | 'userId'>
