@@ -60,7 +60,7 @@ onUnmounted(() => store.dispatch('tasks/resetFilters'))
   <AppLoading v-if="isLoading" />
 
   <div v-else>
-    <TasksControls />
+    <TasksControls :has-tasks />
 
     <v-table v-if="hasTasks" density="default" hover>
       <thead>

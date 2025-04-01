@@ -2,6 +2,8 @@
 import { ROUTES } from '@/types/routes'
 import StatusFilter from '@/components/tasks/filters/StatusFilter.vue'
 import PrioritySorting from '@/components/tasks/filters/PrioritySorting.vue'
+
+const { hasTasks = true } = defineProps<{ hasTasks?: boolean }>()
 </script>
 
 <template>
@@ -14,8 +16,8 @@ import PrioritySorting from '@/components/tasks/filters/PrioritySorting.vue'
         >Add new Task</v-btn
       >
     </div>
-    <StatusFilter />
-    <div class="d-flex align-center ga-4">
+    <StatusFilter v-if="hasTasks" />
+    <div v-if="hasTasks" class="d-flex align-center ga-4">
       <PrioritySorting />
     </div>
   </div>
