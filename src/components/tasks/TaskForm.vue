@@ -7,12 +7,18 @@ import type { RootStore } from '@/store'
 import { ROUTES } from '@/types/routes'
 import { PRIORITIES, STATUSES, type Task } from '@/entities/task'
 import { useTask } from '@/shared/composables/useTask'
+import { useSnack } from '@/shared/composables/useSnack'
 
 const router = useRouter()
 const store = useStore<RootStore>()
+const { showSnack } = useSnack(store)
 
 const { taskId, projectId } = useRoute().params
-const { isNewTask, task, taskTitle, saveButtonText, deleteTask } = useTask({ projectId, taskId })
+const { action, createdOrUpdatedText, isNewTask, task, taskTitle, saveButtonText, deleteTask } =
+  useTask({
+    projectId,
+    taskId,
+  })
 
 // FORM
 const taskForm: Ref<Task> = ref({ ...task.value })
@@ -50,6 +56,11 @@ const priorityColor = computed(() => {
 
 const goBack = () => router.push({ name: ROUTES.PROJECT_DETAILS.name, params: { projectId } })
 
+const processDelete = () => {
+  deleteTask()
+  goBack()
+}
+
 const saveTask = async () => {
   // NOTE: just a pure validation
   if (!taskForm.value.title.trim()) {
@@ -59,15 +70,13 @@ const saveTask = async () => {
   disabled.value = true
 
   try {
-    const action = isNewTask.value ? 'createTask' : 'updateTask'
     const newTask = await store.dispatch(`tasks/${action}`, taskForm.value)
     resetForm()
-    // TODO: ALERT show
-    alert(`Task ${newTask.title} was created.`)
-    setTimeout(() => goBack(), 700)
-  } catch (error) {
-    // TODO: ALERT show
-    console.error('Creating task failed with error ', error)
+    showSnack({ text: `Task ${newTask.title} was ${createdOrUpdatedText}.` })
+    goBack()
+  } catch (error: unknown) {
+    const text = error instanceof Error ? error.message : String(error)
+    showSnack({ text, type: 'error' })
   } finally {
     disabled.value = false
   }
@@ -85,7 +94,7 @@ const saveTask = async () => {
             <div class="d-flex justify-space-between">
               <span>{{ taskTitle }}</span>
               <div v-if="!isNewTask" class="d-flex ga-2">
-                <v-btn variant="outlined" @click="deleteTask">Delete</v-btn>
+                <v-btn variant="outlined" @click="processDelete">Delete</v-btn>
               </div>
             </div>
           </v-card-title>

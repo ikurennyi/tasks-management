@@ -3,6 +3,7 @@ import { useTheme } from 'vuetify'
 import { RouterView } from 'vue-router'
 
 import ThemeIcon from '@/components/icons/ThemeIcon.vue'
+import SnackBar from '@/shared/ui/SnackBar.vue'
 import { ROUTES } from './types/routes'
 
 const theme = useTheme()
@@ -35,6 +36,8 @@ function toggleTheme() {
 
       <v-main>
         <RouterView />
+
+        <SnackBar />
       </v-main>
     </v-app>
   </v-theme-provider>

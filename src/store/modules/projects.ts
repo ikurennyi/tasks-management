@@ -91,26 +91,26 @@ const projectsStore: Module<ProjectsStore, RootStore> = {
       try {
         const project = await createProject(rawProject)
         if (!project) {
-          throw new Error('[Error] Project was not created')
+          throw new Error('Server responded with an error')
         }
 
         commit(CREATE_PROJECT, project)
         return project
       } catch (error) {
-        console.error('[Error]: Creating project failed with error ', error)
+        console.error('[store:createProject]', error)
         return Promise.reject(error)
       }
     },
-    async updateProject({ commit }, rawProject): Promise<Project | Error> {
+    async updateProject({ commit }, updatedProject): Promise<Project | Error> {
       try {
-        const project = await updateProject(rawProject)
+        const project = await updateProject(updatedProject)
         if (!project) {
-          throw new Error('[Error]: Updating project failed with error ')
+          throw new Error('Oops! Updating projects is limited by the back-end side.')
         }
         commit(UPDATE_PROJECT, project)
         return project
       } catch (error) {
-        console.error('[Error]: Updating project failed with error ', error)
+        console.error(error)
         return Promise.reject(error)
       }
     },

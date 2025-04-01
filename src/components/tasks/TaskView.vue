@@ -10,8 +10,10 @@ import type { Project } from '@/entities/project'
 import TaskPriority from './TaskPriority.vue'
 import TaskStatus from './TaskStatus.vue'
 import { formatDate } from '@/shared/lib/ui'
+import { useSnack } from '@/shared/composables/useSnack'
 
 const store = useStore<RootStore>()
+const { showSnack } = useSnack(store)
 
 const { taskId, projectId } = useRoute().params
 const router = useRouter()
@@ -36,6 +38,7 @@ const editTask = () => router.push({ name: ROUTES.EDIT_PROJECT.name, params: { p
 const deleteTask = () => {
   store.dispatch('tasks/deleteTaskById', { taskId: +taskId, projectId: +projectId })
   router.push({ name: ROUTES.PROJECT_DETAILS.name, params: { projectId } })
+  showSnack({ text: `Task #${taskId} was removed` })
 }
 </script>
 

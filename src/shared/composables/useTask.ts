@@ -1,12 +1,15 @@
 import { computed, type Ref } from 'vue'
 import { PRIORITIES, STATUSES, type RawTask, type Task } from '@/entities/task'
 import store from '@/store'
+import { useSnack } from '@/shared/composables/useSnack'
+const { showSnack } = useSnack(store)
+
 export function useTask({
   projectId,
   taskId = null,
 }: {
   projectId: string | string[]
-  taskId: string | string[] | null
+  taskId: string | string[] | number | null
 }) {
   const isNewTask = computed(() => !taskId)
 
@@ -27,10 +30,20 @@ export function useTask({
     return tasksByProjectId.find((task: Task) => task.id === +taskId) || null
   })
 
+  const action = isNewTask.value ? 'createTask' : 'updateTask'
+  const createdOrUpdatedText = isNewTask.value ? 'created' : 'updated'
   const taskTitle = isNewTask.value ? 'New Task' : `Task ID: ${taskId}`
   const saveButtonText = isNewTask.value ? 'Create' : 'Update'
 
-  const deleteTask = () => {}
+  const deleteTask = () => {
+    // NOTE: this is just a temporary stub
+    if (taskId === null) {
+      console.error('You can not use remove task functionality at this moment.')
+      return
+    }
+    showSnack({ text: `Task #${taskId} was removed` })
+    store.dispatch('tasks/deleteTaskById', { taskId: +taskId, projectId: +projectId })
+  }
 
-  return { isNewTask, task, taskTitle, saveButtonText, deleteTask }
+  return { action, createdOrUpdatedText, isNewTask, task, taskTitle, saveButtonText, deleteTask }
 }

@@ -5,14 +5,23 @@ import { useStore } from 'vuex'
 
 import type { RootStore } from '@/store'
 import { ROUTES } from '@/types/routes'
-import type { Project } from '@/entities/project'
 import { useProject } from '@/shared/composables/useProject'
+import { useSnack } from '@/shared/composables/useSnack'
 
 const router = useRouter()
 const store = useStore<RootStore>()
+const { showSnack } = useSnack(store)
 
 const { projectId } = useRoute().params
-const { project, deleteProject, isNewProject, saveButtonText, projectTitle } = useProject(projectId)
+const {
+  action,
+  createdOrUpdatedText,
+  project,
+  deleteProject,
+  isNewProject,
+  saveButtonText,
+  projectTitle,
+} = useProject(projectId)
 
 // Form
 const formProject = ref({ ...project.value })
@@ -39,21 +48,16 @@ const saveProject = async () => {
   }
   disabled.value = true
 
+  // TODO: can it be refactored? composable?
   try {
-    let newProject: Project
-    if (isNewProject.value) {
-      newProject = await store.dispatch('projects/createProject', formProject.value)
-    } else {
-      newProject = await store.dispatch('projects/updateProject', formProject.value)
-    }
+    const newProject = await store.dispatch(`projects/${action}`, formProject.value)
     resetForm()
-    // TODO: ALERT show
-    alert(`Project ${newProject.title} was created.`)
+    showSnack({ text: `Project ${newProject.title} was ${createdOrUpdatedText}.` })
     store.dispatch('projects/setCurrentProject', newProject)
-    setTimeout(() => goBack(newProject.id), 700)
-  } catch (error) {
-    // TODO: ALERT show
-    console.error('[Error]: Creating project failed with error ', error)
+    goBack(newProject.id)
+  } catch (error: unknown) {
+    const text = error instanceof Error ? error.message : String(error)
+    showSnack({ text, type: 'error' })
   } finally {
     disabled.value = false
   }

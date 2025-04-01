@@ -38,8 +38,8 @@ export async function getProjectById(projectId: number): Promise<Project | null>
   }
 }
 
-export async function createProject(project: RawProject): Promise<Project | null> {
-  const postLikeProject = { ...project, body: project.description }
+export async function createProject(projectData: RawProject): Promise<Project | null> {
+  const postLikeProject = { ...projectData, body: projectData.description }
   try {
     const response = await fetch(URL_GET_PROJECTS, {
       method: 'POST',
@@ -50,21 +50,21 @@ export async function createProject(project: RawProject): Promise<Project | null
     })
 
     if (!response.ok) {
-      throw new Error(`[CREATE project]: failed with status ${response.status}`)
+      throw new Error(`[API:createProject] failed with status ${response.status}`)
     }
 
     const newProject: DummyProject = await response.json()
     return prepareProjects([newProject], true)[0]
   } catch (error) {
-    console.error('[Failed getting project] ', error)
+    console.error(error)
     return null
   }
 }
 
-export async function updateProject(project: RawProject): Promise<Project | null> {
-  const postLikeProject = { ...project, body: project.description }
+export async function updateProject(projectData: Project): Promise<Project | null> {
+  const postLikeProject = { ...projectData, body: projectData.description }
   try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts/1', {
+    const response = await fetch(`${URL_GET_PROJECT}${projectData.id}`, {
       method: 'PUT',
       body: JSON.stringify(postLikeProject),
       headers: {
@@ -73,13 +73,13 @@ export async function updateProject(project: RawProject): Promise<Project | null
     })
 
     if (!response.ok) {
-      throw new Error(`[UPDATE project]: failed with status ${response.status}`)
+      throw new Error(`[API:updateProject]: failed with status ${response.status}`)
     }
 
-    const newProject = await response.json()
+    const newProject: DummyProject = await response.json()
     return prepareProjects([newProject])[0]
   } catch (error) {
-    console.error('[Failed getting project] ', error)
+    console.error(error)
     return null
   }
 }

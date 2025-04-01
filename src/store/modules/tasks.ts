@@ -109,13 +109,13 @@ const tasksStore: Module<TasksStore, RootStore> = {
       try {
         const task = await createTask(rawTask)
         if (!task) {
-          throw new Error('[1] Server responded with an error')
+          throw new Error('Server responded with an error')
         }
 
         commit(CREATE_TASK, task)
         return task
       } catch (error) {
-        console.error('[Error]: Creating task failed with error')
+        console.error('[store:createTask]', error)
         return Promise.reject(error)
       }
     },
@@ -123,13 +123,13 @@ const tasksStore: Module<TasksStore, RootStore> = {
       try {
         const task = await updateTask(taskData.id)
         if (!task) {
-          throw new Error(`[Error] Task was not updated: error`)
+          throw new Error('Oops! Updating tasks is limited by the back-end side.')
         }
 
         commit(UPDATE_TASK, task)
         return task
       } catch (error) {
-        console.error('[Error]: Updating task failed with error')
+        console.error(error)
         return Promise.reject(error)
       }
     },

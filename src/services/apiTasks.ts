@@ -1,7 +1,7 @@
 import { URL_GET_TASKS } from '@/config'
 import type { DummyTask, RawTask, Task } from '@/entities/task'
 
-import { delayWithTimeout, prepareTasks } from '@/shared/lib/api-helpers'
+import { delayWithTimeout, prepareNewTasks, prepareTasks } from '@/shared/lib/api-helpers'
 
 export async function getTasks(projectId: number) {
   try {
@@ -43,8 +43,8 @@ export async function createTask(task: RawTask): Promise<Task | null> {
       throw new Error(`[Create task]: failed with status ${response.status}`)
     }
 
-    const newTask: DummyTask = await response.json()
-    return prepareTasks([newTask], true)[0]
+    const newTask: Task = await response.json()
+    return prepareNewTasks([newTask])[0]
   } catch (error) {
     console.error('[Failed getting project] ', error)
     return null

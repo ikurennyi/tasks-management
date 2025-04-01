@@ -76,3 +76,15 @@ export function prepareTasks(commentsList: DummyTask[], isNewTask = false): Task
     dueDate: generateRandomDueDate(),
   }))
 }
+
+export function prepareNewTasks(commentsList: Task[]): Task[] {
+  return commentsList.map(({ title, projectId, description, status, priority, dueDate }) => ({
+    id: generateRandomId(),
+    title: capitalizeFirstLetter(title),
+    projectId,
+    description,
+    status,
+    priority,
+    dueDate,
+  }))
+}

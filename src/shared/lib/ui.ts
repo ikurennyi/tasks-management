@@ -3,5 +3,5 @@ export function capitalizeFirstLetter(string: string): string {
 }
 
 export function formatDate(date: Date) {
-  return date.toISOString().split('T')[0].replace(/-/g, '-')
+  return new Date(date).toISOString().split('T')[0].replace(/-/g, '-')
 }

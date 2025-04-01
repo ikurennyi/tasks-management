@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import { useStore } from 'vuex'
-import type { RootStore } from '@/store'
-
 import { ROUTES } from '@/types/routes'
 import PencilIcon from '@/components/icons/PencilIcon.vue'
 import DeleteIcon from '@/components/icons/DeleteIcon.vue'
+import { useTask } from '@/shared/composables/useTask'
 
 const { id, projectId } = defineProps<{ id: number; projectId: string }>()
-const store = useStore<RootStore>()
-
-const deleteTask = (taskId: number) =>
-  store.dispatch('tasks/deleteTaskById', { taskId: +taskId, projectId: +projectId })
+const { deleteTask } = useTask({ projectId, taskId: id })
 </script>
 
 <template>
@@ -34,7 +29,7 @@ const deleteTask = (taskId: number) =>
           :icon="DeleteIcon"
           variant="flat"
           size="small"
-          @click.stop="deleteTask(id)"
+          @click.stop="deleteTask()"
         >
         </v-btn>
       </template>
