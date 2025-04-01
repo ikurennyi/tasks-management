@@ -1,29 +1,22 @@
 <script setup lang="ts">
 import { type Ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 
 import { ROUTES } from '@/types/routes'
 import type { RootStore } from '@/store'
 import type { Project } from '@/entities/project'
 import TasksList from '@/components/tasks/TasksList.vue'
+import { useProject } from '@/shared/composables/useProject'
 
 const store = useStore<RootStore>()
 
-const router = useRouter()
 const route = useRoute()
 
 const projectId = route.params.projectId as string
 const project: Ref<Project | null> = computed(() => store.getters['projects/current'])
 
-const deleteProject = async () => {
-  const confirmationText =
-    'This action will remove project and all corresponding tasks. Are you sure you want to delete it?'
-  if (window.confirm(confirmationText)) {
-    await store.dispatch('projects/deleteProject', +projectId)
-    router.push({ name: ROUTES.PROJECTS_LIST.name })
-  }
-}
+const { deleteProject } = useProject(projectId)
 
 const isLoading = computed(() => store.getters['projects/isLoading'])
 onMounted(async () => {

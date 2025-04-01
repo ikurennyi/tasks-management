@@ -18,15 +18,22 @@ export function delayWithTimeout() {
   })
 }
 
-export function prepareProjects(dummyProjects: DummyProject[], limit = PROJECTS_LIMIT): Project[] {
+// NOTE: override jsonplaceholder.typicode.com's back-end returned id's value
+// their returned id === 101 for new projects aka posts
+const generateRandomId = (): number => Math.floor(Math.random() * (10_000 - 102 + 1)) + 102
+
+export function prepareProjects(
+  dummyProjects: DummyProject[],
+  isNewProject: boolean = false,
+): Project[] {
   return dummyProjects
     .map(({ id, title, userId, body: description }) => ({
-      id,
+      id: isNewProject ? generateRandomId() : id,
       title: capitalizeFirstLetter(title),
       userId,
       description,
     }))
-    .slice(0, limit)
+    .slice(0, PROJECTS_LIMIT)
 }
 
 function generateRandomStatus(): Status {

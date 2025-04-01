@@ -64,6 +64,7 @@ _All todos have to be cleaned up before v.1.0.0_
 
 1. [ ] Check if the root `cypress` folder is needed.
 2. [ ] Cleanup the `scripts` section in `package.json` (Note: Cypress will not be used as a component testing framework).
+3. [ ] Projects CRUD done. No alerts (feedbacks) at the moment.
 
 ### Future improvements list
 

@@ -53,8 +53,8 @@ export async function createProject(project: RawProject): Promise<Project | null
       throw new Error(`[CREATE project]: failed with status ${response.status}`)
     }
 
-    const newProject = await response.json()
-    return prepareProjects([newProject])[0]
+    const newProject: DummyProject = await response.json()
+    return prepareProjects([newProject], true)[0]
   } catch (error) {
     console.error('[Failed getting project] ', error)
     return null
