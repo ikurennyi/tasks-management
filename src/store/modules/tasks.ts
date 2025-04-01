@@ -1,6 +1,6 @@
 import type { Module } from 'vuex'
 import type { RootStore } from '@/store/index'
-import { getTasks } from '@/services/apiService'
+import { getTasks } from '@/services/apiTasks'
 import { PRIORITIES, STATUSES, type Priority, type Status } from '@/entities/task'
 
 const LOADING_STARTED = 'loadingStarted'
