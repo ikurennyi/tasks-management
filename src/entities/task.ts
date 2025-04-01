@@ -16,6 +16,8 @@ export interface Task {
   dueDate: Date
 }
 
+export type RawTask = Omit<Task, 'id'>
+
 export const PRIORITIES = { LOW: 'low', MEDIUM: 'medium', HIGH: 'high' } as const
 export type Priority = (typeof PRIORITIES)[keyof typeof PRIORITIES]
 export const PRIORITY_ORDER = {

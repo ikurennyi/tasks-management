@@ -1,7 +1,7 @@
 import type { Module } from 'vuex'
 import type { RootStore } from '@/store/index'
-import { getTasks } from '@/services/apiTasks'
-import { PRIORITIES, STATUSES, type Priority, type Status } from '@/entities/task'
+import { createTask, getTasks, updateTask } from '@/services/apiTasks'
+import { PRIORITIES, STATUSES, type Priority, type RawTask, type Status } from '@/entities/task'
 
 const LOADING_STARTED = 'loadingStarted'
 const LOADING_STOPPED = 'loadingStopped'
@@ -11,6 +11,8 @@ const DELETE_TASKS = 'deleteTasks'
 const SET_FILTERS = 'setFilters'
 const SET_PRIORITY_ORDER = 'setPriorityOrder'
 const RESET_FILTERS = 'resetFilters'
+const CREATE_TASK = 'createTask'
+const UPDATE_TASK = 'updateTask'
 
 export const TASKS_FILTERS = Object.values(STATUSES)
 export const DEFAULT_PRIORITY = PRIORITIES.HIGH
@@ -47,6 +49,18 @@ const tasksStore: Module<TasksStore, RootStore> = {
     },
     [SET_TASKS_DATA](state, { tasksList, projectId }) {
       state.tasksByProjectId[projectId] = tasksList
+    },
+    [CREATE_TASK](state, task) {
+      state.tasksByProjectId[task.projectId].push(task)
+    },
+    [UPDATE_TASK](state, task) {
+      const tasksByProjectId = state.tasksByProjectId[task.projectId]
+      const index = tasksByProjectId.findIndex((t: Task) => t.id === task.id)
+      if (index !== -1) {
+        tasksByProjectId[index] = task
+      } else {
+        tasksByProjectId.push(task)
+      }
     },
     [DELETE_TASK](state, { projectId, taskId }) {
       state.tasksByProjectId[projectId] = state.tasksByProjectId[projectId].filter(
@@ -90,6 +104,34 @@ const tasksStore: Module<TasksStore, RootStore> = {
     },
     async deleteTasksByProjectId({ commit }, projectId: number) {
       commit(DELETE_TASKS, projectId)
+    },
+    async createTask({ commit }, rawTask: RawTask): Promise<Task | null> {
+      try {
+        const task = await createTask(rawTask)
+        if (!task) {
+          throw new Error('[1] Server responded with an error')
+        }
+
+        commit(CREATE_TASK, task)
+        return task
+      } catch (error) {
+        console.error('[Error]: Creating task failed with error')
+        return Promise.reject(error)
+      }
+    },
+    async updateTask({ commit }, taskData: Task): Promise<Error> {
+      try {
+        const task = await updateTask(taskData.id)
+        if (!task) {
+          throw new Error(`[Error] Task was not updated: error`)
+        }
+
+        commit(UPDATE_TASK, task)
+        return task
+      } catch (error) {
+        console.error('[Error]: Updating task failed with error')
+        return Promise.reject(error)
+      }
     },
     setFilters({ commit }, filters) {
       commit(SET_FILTERS, filters)

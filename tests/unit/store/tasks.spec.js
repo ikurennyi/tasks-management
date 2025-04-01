@@ -5,8 +5,8 @@ import { STATUSES, PRIORITIES } from '@/entities/task'
 import { createTasksStore } from '../helpers/store-factory'
 import { tasksList } from '../helpers/mocks/tasks'
 
-import { getTasks } from '@/services/apiService'
-vi.mock('@/services/apiService', { spy: true })
+import { getTasks, createTask, updateTask } from '@/services/apiTasks'
+vi.mock('@/services/apiTasks', { spy: true })
 
 const projectId = Object.keys(tasksList)[0]
 
@@ -67,6 +67,11 @@ describe('Tasks store', () => {
   })
 
   describe('actions', () => {
+    let tempTasksList
+    beforeEach(() => {
+      tempTasksList = { ...tasksList }
+    })
+
     test('isLoadingProject', () => {
       const store = createTasksStore({})
       store.dispatch('tasks/addIsLoading')
@@ -78,7 +83,7 @@ describe('Tasks store', () => {
     })
 
     test('getTasksData', async () => {
-      const tasks = tasksList[projectId]
+      const tasks = tempTasksList[projectId]
       const store = createTasksStore({ tasksByProjectId: {} })
       const tasksLength = tasks.length
       vi.mocked(getTasks).mockResolvedValue(tasks)
@@ -91,19 +96,48 @@ describe('Tasks store', () => {
     })
 
     test('deleteTaskById', async () => {
-      const initialTasksLength = tasksList[projectId].length
-      const firstTaskID = tasksList[projectId][0]['id']
-      const store = createTasksStore({ tasksByProjectId: tasksList })
+      const initialTasksLength = tempTasksList[projectId].length
+      const firstTaskID = tempTasksList[projectId][0]['id']
+      const store = createTasksStore({ tasksByProjectId: tempTasksList })
 
       await store.dispatch('tasks/deleteTaskById', { projectId, taskId: firstTaskID })
       expect(store.state.tasks.tasksByProjectId[projectId]).toHaveLength(initialTasksLength - 1)
     })
 
     test('deleteTasksByProjectId', async () => {
-      const store = createTasksStore({ tasksByProjectId: tasksList })
+      const store = createTasksStore({ tasksByProjectId: tempTasksList })
 
       await store.dispatch('tasks/deleteTasksByProjectId', projectId)
       expect(store.state.tasks.tasksByProjectId).toEqual({})
+    })
+
+    test('createTask finished successfully', async () => {
+      const initialTasksLength = tempTasksList[projectId].length
+      const task = tempTasksList[projectId][0]
+      const store = createTasksStore({ tasksByProjectId: tempTasksList })
+      vi.mocked(createTask).mockResolvedValue(task)
+
+      await store.dispatch('tasks/createTask', task)
+      expect(createTask).toHaveBeenCalledWith(task)
+      expect(store.state.tasks.tasksByProjectId[projectId]).toHaveLength(initialTasksLength + 1)
+    })
+
+    test('createTask finished with Error', async () => {
+      const task = tempTasksList[projectId][0]
+      const store = createTasksStore({ tasksByProjectId: tempTasksList })
+      vi.mocked(createTask).mockRejectedValue(new Error('ERROR'))
+
+      await expect(store.dispatch('tasks/createTask', task)).rejects.toThrow('ERROR')
+      expect(store.state.tasks.tasksByProjectId[projectId]).not.toContain(task)
+    })
+
+    test('updateTask', async () => {
+      const errorText = 'API of JSONPlaceholder is not allowed to update tasks.'
+      const task = tempTasksList[projectId][0]
+      const store = createTasksStore()
+      vi.mocked(updateTask).mockRejectedValue(new Error(errorText))
+
+      await expect(store.dispatch('tasks/updateTask', task)).rejects.toThrow(errorText)
     })
 
     test('setFilters', () => {

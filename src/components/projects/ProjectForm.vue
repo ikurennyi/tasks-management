@@ -32,6 +32,7 @@ const goBack = (newProjectId: number) =>
       })
 
 const saveProject = async () => {
+  // NOTE: just a pure validation
   if (!formProject.value.title.trim()) {
     alert('You have to specify at least Title')
     return
@@ -46,12 +47,12 @@ const saveProject = async () => {
       newProject = await store.dispatch('projects/updateProject', formProject.value)
     }
     resetForm()
-    // TODO: ALERT show alert
+    // TODO: ALERT show
     alert(`Project ${newProject.title} was created.`)
     store.dispatch('projects/setCurrentProject', newProject)
     setTimeout(() => goBack(newProject.id), 700)
   } catch (error) {
-    // TODO: ALERT show alert
+    // TODO: ALERT show
     console.error('[Error]: Creating project failed with error ', error)
   } finally {
     disabled.value = false

@@ -27,7 +27,6 @@ onMounted(async () => {
   if (!project.value) {
     await store.dispatch('projects/getById', projectId)
   }
-  await store.dispatch('tasks/getTasksData', projectId)
 })
 
 const goBack = () => router.push({ name: ROUTES.PROJECT_DETAILS.name, params: { projectId } })
@@ -73,13 +72,13 @@ const deleteTask = () => {
           <v-divider></v-divider>
           <v-card-text>
             <div class="d-flex justify-space-between py-4">
-              <div>Priority</div>
-              <TaskPriority :priority="task.priority" />
+              <div>Status</div>
+              <TaskStatus :status="task.status" />
             </div>
 
             <div class="d-flex justify-space-between py-4">
-              <div>Status</div>
-              <TaskStatus :status="task.status" />
+              <div>Priority</div>
+              <TaskPriority :priority="task.priority" />
             </div>
 
             <div class="d-flex justify-space-between py-4">

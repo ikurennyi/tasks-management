@@ -65,9 +65,9 @@ function generateRandomDueDate(): Date {
   return new Date(randomTimestamp)
 }
 
-export function prepareTasks(commentsList: DummyTask[]): Task[] {
+export function prepareTasks(commentsList: DummyTask[], isNewTask = false): Task[] {
   return commentsList.map(({ id, name: title, postId: projectId, body: description }) => ({
-    id,
+    id: isNewTask ? generateRandomId() : id,
     title: capitalizeFirstLetter(title),
     projectId,
     description,

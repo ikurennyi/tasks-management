@@ -10,11 +10,15 @@ import router from './router'
 import App from './App.vue'
 import AppLoading from './shared/ui/AppLoading.vue'
 import NoEntries from './shared/ui/NoEntries.vue'
+import { VDateInput } from 'vuetify/labs/components'
 
 const app = createApp(App)
 const vuetify = createVuetify({
   theme: {
     defaultTheme: 'light',
+  },
+  components: {
+    VDateInput,
   },
 })
 

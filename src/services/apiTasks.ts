@@ -1,5 +1,5 @@
 import { URL_GET_TASKS } from '@/config'
-import type { DummyTask } from '@/entities/task'
+import type { DummyTask, RawTask, Task } from '@/entities/task'
 
 import { delayWithTimeout, prepareTasks } from '@/shared/lib/api-helpers'
 
@@ -21,4 +21,37 @@ export async function getTasks(projectId: number) {
     console.error('[Failed getting tasks list] ', error)
     return []
   }
+}
+
+export async function createTask(task: RawTask): Promise<Task | null> {
+  const commentLikeTask = {
+    ...task,
+    name: task.title,
+    postId: task.projectId,
+    body: task.description,
+  }
+  try {
+    const response = await fetch(`${URL_GET_TASKS}${task.projectId}`, {
+      method: 'POST',
+      body: JSON.stringify(commentLikeTask),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`[Create task]: failed with status ${response.status}`)
+    }
+
+    const newTask: DummyTask = await response.json()
+    return prepareTasks([newTask], true)[0]
+  } catch (error) {
+    console.error('[Failed getting project] ', error)
+    return null
+  }
+}
+
+export async function updateTask(taskId: number): Promise<null> {
+  console.error(`Attempt to update task with ID: ${taskId} failed due to the API response.`)
+  throw new Error('API of JSONPlaceholder is not allowed to update tasks.')
 }
