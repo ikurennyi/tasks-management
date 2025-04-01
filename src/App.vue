@@ -18,20 +18,29 @@ function toggleTheme() {
       <v-app-bar class="d-flex align-center justify-space-between">
         <v-app-bar-title>
           <div>
-            Tasks Management App |
-            <RouterLink :to="{ name: ROUTES.PROJECTS_LIST.name }">Projects</RouterLink>
+            <RouterLink :to="{ name: ROUTES.PROJECTS_LIST.name }">Tasks Management App</RouterLink>
           </div>
         </v-app-bar-title>
 
-        <v-tooltip text="Toggle Theme">
-          <template #activator="{ props }">
-            <v-btn @click="toggleTheme">
-              <v-icon v-bind="props" size="large">
-                <ThemeIcon />
-              </v-icon>
-            </v-btn>
-          </template>
-        </v-tooltip>
+        <div>
+          To test guards:
+          <RouterLink :to="{ name: ROUTES.PROJECT_DETAILS.name, params: { projectId: 'aaa' } }"
+            >Non-Existent Project</RouterLink
+          >
+          |
+          <RouterLink :to="{ name: ROUTES.TASK.name, params: { projectId: 1, taskId: 'aaa' } }"
+            >Non-Existent Task</RouterLink
+          >
+          <v-tooltip text="Toggle Theme">
+            <template #activator="{ props }">
+              <v-btn @click="toggleTheme">
+                <v-icon v-bind="props" size="large">
+                  <ThemeIcon />
+                </v-icon>
+              </v-btn>
+            </template>
+          </v-tooltip>
+        </div>
       </v-app-bar>
 
       <v-main>

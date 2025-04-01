@@ -2,6 +2,8 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 import { ROUTES } from '@/types/routes'
 import ProjectsList from '@/components/projects/ProjectsList.vue'
+import projectsGuard from './guards/projects-guard'
+import tasksGuard from './guards/tasks-guard'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -62,6 +64,14 @@ const router = createRouter({
     }
   },
   strict: true,
+})
+router.beforeEach((to) => {
+  const guards = [projectsGuard, tasksGuard]
+
+  for (const guard of guards) {
+    const redirect = guard(to)
+    if (redirect) return redirect
+  }
 })
 
 export default router
