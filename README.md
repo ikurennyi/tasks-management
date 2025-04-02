@@ -30,7 +30,7 @@
 
 1. Проект будет доступен:
    1. As code, [on GitHub](https://github.com/ikurennyi/tasks-management).
-   2. As a live version of the website on GitHub Pages
+   2. As a live version of the website [on GitHub Pages](https://ikurennyi.github.io/tasks-management/)
    3. As a zip archive attached to the email upon completion of the test task
 
 ## <a id="title4">Project Launch and CLI Commands</a>
@@ -46,7 +46,7 @@
    3. Run the command `npm install`
    4. Start the application with the command `npm run dev`
    5. The Vite local server will start. Usually (if the port is available), you can go to `http://localhost:5173/` n your browser (Vite will show the address of the running server in the terminal).
-3. The running application can be viewed on the public GitHub page (GitHub Pages is used).
+3. The running application can be viewed [on the public GitHub page](https://ikurennyi.github.io/tasks-management/) (GitHub Pages is used).
 
 ### <a id="subtitle42">CLI:</a>
 
