@@ -66,14 +66,14 @@ const saveProject = async () => {
 
 <template>
   <div>
-    <v-btn class="my-4" @click="goBack">Go back</v-btn>
+    <v-btn class="my-4" @click="goBack">Go Back</v-btn>
 
     <v-row>
       <v-col>
-        <v-card elevation="6">
+        <v-card elevation="6" data-test="project-form">
           <v-card-title>
             <div class="d-flex justify-space-between">
-              <span>{{ projectTitle }}</span>
+              <h4>{{ projectTitle }}</h4>
 
               <div v-if="!isNewProject" class="d-flex ga-2">
                 <v-btn variant="outlined" @click="deleteProject">Delete</v-btn>
@@ -89,6 +89,7 @@ const saveProject = async () => {
               autofocus
               label="Title"
               variant="outlined"
+              data-test="project-form-title"
               :disabled
             ></v-text-field>
 
@@ -96,6 +97,7 @@ const saveProject = async () => {
               v-model="formProject.description"
               label="Description"
               variant="outlined"
+              data-test="project-form-description"
               :disabled
             ></v-textarea>
 

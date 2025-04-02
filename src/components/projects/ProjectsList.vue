@@ -28,7 +28,13 @@ const fetchProjects = async () => await store.dispatch('projects/setProjectsData
       <h2>All Projects</h2>
 
       <div class="d-flex ga-3">
-        <v-btn v-if="!hasProjects" variant="tonal" color="primary" @click="fetchProjects">
+        <v-btn
+          v-if="!hasProjects"
+          variant="tonal"
+          color="primary"
+          data-test="populate-projects"
+          @click="fetchProjects"
+        >
           Populate Projects
         </v-btn>
         <v-btn variant="elevated" color="primary" @click="createNewProject">Add New Project</v-btn>
@@ -37,7 +43,7 @@ const fetchProjects = async () => await store.dispatch('projects/setProjectsData
 
     <AppLoading v-if="isLoading" />
 
-    <v-row v-else-if="hasProjects" class="mt-2">
+    <v-row v-else-if="hasProjects" class="mt-2" data-test="projects-list">
       <v-col v-for="(project, index) in projectsList" :key="index" cols="12" md="4">
         <v-card
           :key="project.id"

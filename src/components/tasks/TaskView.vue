@@ -49,7 +49,7 @@ const deleteTask = () => {
     <AppLoading v-if="!task" />
 
     <v-row v-else>
-      <v-col cols="6">
+      <v-col cols="6" data-test="task-info">
         <v-card>
           <v-card-title>
             <div class="d-flex justify-space-between">
@@ -67,10 +67,10 @@ const deleteTask = () => {
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="6" data-test="task-details">
         <v-card>
           <v-card-title>
-            <span>Task details</span>
+            <span>Task Details</span>
           </v-card-title>
           <v-divider></v-divider>
           <v-card-text>

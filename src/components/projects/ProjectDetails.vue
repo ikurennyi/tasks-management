@@ -28,18 +28,10 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="d-flex align-top justify-space-between mb-6">
+    <div class="d-flex align-top justify-space-between mb-6" data-test="project-main">
       <h2>{{ project?.title }}</h2>
 
       <div class="d-flex ga-4 pt-2">
-        <v-btn
-          v-if="false"
-          variant="tonal"
-          color="secondary"
-          @click.prevent="$router.push(ROUTES.PROJECTS_LIST.path)"
-        >
-          back to the Projects List
-        </v-btn>
         <v-btn
           variant="outlined"
           color="primary"

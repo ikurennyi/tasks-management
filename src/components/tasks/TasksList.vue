@@ -62,7 +62,7 @@ onUnmounted(() => store.dispatch('tasks/resetFilters'))
   <div v-else>
     <TasksControls :has-tasks />
 
-    <v-table v-if="hasTasks" density="default" hover>
+    <v-table v-if="hasTasks" density="default" hover data-test="tasks-table">
       <thead>
         <tr>
           <th class="text-left">ID</th>
@@ -86,7 +86,7 @@ onUnmounted(() => store.dispatch('tasks/resetFilters'))
           <td><TaskStatus :status /></td>
           <td><TaskPriority :priority /></td>
           <td>{{ formatDate(dueDate) }}</td>
-          <td class="text-right"><TaskActions :id :project-id /></td>
+          <td class="text-right" data-test="task-table-actions"><TaskActions :id :project-id /></td>
         </tr>
       </tbody>
     </v-table>

@@ -18,7 +18,14 @@ const togglePriority = () => {
 
 <template>
   <div>
-    <v-btn :prepend-icon="SortIcon" variant="text" @click="togglePriority">Sort by Priority</v-btn>
+    <v-btn
+      :prepend-icon="SortIcon"
+      variant="text"
+      data-test="sort-priority"
+      @click="togglePriority"
+    >
+      Sort by Priority
+    </v-btn>
   </div>
 </template>
 

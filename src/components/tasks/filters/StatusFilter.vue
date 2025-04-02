@@ -22,6 +22,7 @@ watch(statusFilter, () => {
       divided
       color="primary"
       multiple
+      data-test="filter-status"
     >
       <v-btn v-for="status in STATUSES" :key="status" :value="status" class="text-body-2">{{
         status

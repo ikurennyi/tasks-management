@@ -87,12 +87,12 @@ const saveTask = async () => {
   <div>
     <v-btn class="my-4" @click="goBack">Go back</v-btn>
 
-    <v-row>
+    <v-row data-test="task-form">
       <v-col>
         <v-card elevation="6">
           <v-card-title>
             <div class="d-flex justify-space-between">
-              <span>{{ taskTitle }}</span>
+              <h4>{{ taskTitle }}</h4>
               <div v-if="!isNewTask" class="d-flex ga-2">
                 <v-btn variant="outlined" @click="processDelete">Delete</v-btn>
               </div>
@@ -106,6 +106,7 @@ const saveTask = async () => {
                 autofocus
                 label="Title"
                 variant="outlined"
+                data-test="task-form-title"
                 :disabled
               ></v-text-field>
             </div>
@@ -118,6 +119,7 @@ const saveTask = async () => {
                   :disabled
                   color=""
                   group
+                  data-test="task-form-status"
                   mandatory
                   density="compact"
                 >
@@ -143,6 +145,7 @@ const saveTask = async () => {
                   group
                   mandatory
                   density="compact"
+                  data-test="task-form-priority"
                   :disabled
                 >
                   <v-btn
@@ -164,6 +167,7 @@ const saveTask = async () => {
                 prepend-icon=""
                 label="Due Date"
                 variant="outlined"
+                data-test="task-form-due-date"
                 :disabled
               ></v-date-input>
             </div>
@@ -172,11 +176,14 @@ const saveTask = async () => {
               v-model="taskForm.description"
               label="Description"
               variant="outlined"
+              data-test="task-form-description"
               :disabled
             ></v-textarea>
 
             <div class="d-flex justify-end">
-              <v-btn :disabled color="success" @click="saveTask">{{ saveButtonText }}</v-btn>
+              <v-btn :disabled color="success" data-test="task-form-submit" @click="saveTask">
+                {{ saveButtonText }}
+              </v-btn>
             </div>
           </v-card-text>
         </v-card>

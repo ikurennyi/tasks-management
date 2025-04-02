@@ -17,6 +17,7 @@ const { deleteTask } = useTask({ projectId, taskId: id })
           :icon="PencilIcon"
           variant="flat"
           size="small"
+          data-test="task-actions-edit"
           @click.stop="$router.push({ name: ROUTES.EDIT_TASK.name, params: { taskId: id } })"
         >
         </v-btn>
@@ -29,6 +30,7 @@ const { deleteTask } = useTask({ projectId, taskId: id })
           :icon="DeleteIcon"
           variant="flat"
           size="small"
+          data-test="task-actions-delete"
           @click.stop="deleteTask()"
         >
         </v-btn>

@@ -22,7 +22,7 @@ function toggleTheme() {
           </div>
         </v-app-bar-title>
 
-        <div>
+        <div data-test="test-guards">
           To test guards:
           <RouterLink :to="{ name: ROUTES.PROJECT_DETAILS.name, params: { projectId: 'aaa' } }"
             >Non-Existent Project</RouterLink

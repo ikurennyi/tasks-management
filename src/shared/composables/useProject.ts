@@ -33,7 +33,7 @@ export function useProject(projectId: string | string[]) {
   const action = isNewProject.value ? 'createProject' : 'updateProject'
   const createdOrUpdatedText = isNewProject.value ? 'created' : 'updated'
   const saveButtonText = isNewProject.value ? 'Create' : 'Update'
-  const projectTitle = isNewProject.value ? 'New project' : `Project ID: ${project.value.id}`
+  const projectTitle = isNewProject.value ? 'New Project' : `Project ID: ${project.value.id}`
 
   return {
     action,

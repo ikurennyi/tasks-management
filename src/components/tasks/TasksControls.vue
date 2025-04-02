@@ -7,13 +7,14 @@ const { hasTasks = true } = defineProps<{ hasTasks?: boolean }>()
 </script>
 
 <template>
-  <div class="d-flex justify-space-between align-end mb-4">
+  <div class="d-flex justify-space-between align-end mb-4" data-test="tasks-controls">
     <div>
       <v-btn
         variant="elevated"
         color="primary"
+        data-test="create-task"
         @click="$router.push({ name: ROUTES.TASK_NEW.name })"
-        >Add new Task</v-btn
+        >Add New Task</v-btn
       >
     </div>
     <StatusFilter v-if="hasTasks" />
