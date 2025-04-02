@@ -1,6 +1,6 @@
 {
   "name": "tasks-management",
-  "version": "0.8.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "contributors": [
@@ -17,8 +17,6 @@
     "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
     "test:unit": "vitest",
-    "test:unit-cypress": "cypress run --component",
-    "test:unit:dev": "cypress open --component",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",

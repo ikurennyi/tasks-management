@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 import type { RootStore } from '@/store'
 import { ROUTES } from '@/types/routes'
 import { useProject } from '@/shared/composables/useProject'
-import { useSnack } from '@/shared/composables/useSnack'
+import { useForm } from '@/shared/composables/useForm'
+import type { Project } from '@/entities/project'
 
 const router = useRouter()
 const store = useStore<RootStore>()
-const { showSnack } = useSnack(store)
 
 const { projectId } = useRoute().params
 const {
@@ -23,15 +22,6 @@ const {
   projectTitle,
 } = useProject(projectId)
 
-// Form
-const formProject = ref({ ...project.value })
-const disabled = ref<boolean>(false)
-
-const resetForm = () => {
-  formProject.value.title = ''
-  formProject.value.description = ''
-}
-
 const goBack = (newProjectId: number) =>
   isNewProject.value
     ? router.push(ROUTES.PROJECTS_LIST.path)
@@ -40,27 +30,17 @@ const goBack = (newProjectId: number) =>
         params: { projectId: newProjectId || projectId },
       })
 
-const saveProject = async () => {
-  // NOTE: just a pure validation
-  if (!formProject.value.title.trim()) {
-    alert('You have to specify at least Title')
-    return
-  }
-  disabled.value = true
+const form = useForm({
+  fields: project.value,
+  action: createdOrUpdatedText,
+})
 
-  // TODO: can it be refactored? composable?
-  try {
-    const newProject = await store.dispatch(`projects/${action}`, formProject.value)
-    resetForm()
-    showSnack({ text: `Project ${newProject.title} was ${createdOrUpdatedText}.` })
-    store.dispatch('projects/setCurrentProject', newProject)
-    goBack(newProject.id)
-  } catch (error: unknown) {
-    const text = error instanceof Error ? error.message : String(error)
-    showSnack({ text, type: 'error' })
-  } finally {
-    disabled.value = false
-  }
+const saveProject = async () => {
+  await form.submit(async (fields: unknown) => {
+    const project: Project = await store.dispatch(`projects/${action}`, fields)
+    store.dispatch('projects/setCurrentProject', project)
+    goBack(project.id)
+  })
 }
 </script>
 
@@ -85,24 +65,26 @@ const saveProject = async () => {
 
           <v-card-text>
             <v-text-field
-              v-model="formProject.title"
+              v-model="form.fields.title"
               autofocus
               label="Title"
               variant="outlined"
               data-test="project-form-title"
-              :disabled
+              :disabled="form.disabled"
             ></v-text-field>
 
             <v-textarea
-              v-model="formProject.description"
+              v-model="form.fields.description"
               label="Description"
               variant="outlined"
               data-test="project-form-description"
-              :disabled
+              :disabled="form.disabled"
             ></v-textarea>
 
             <div class="d-flex justify-end">
-              <v-btn color="success" :disabled @click="saveProject">{{ saveButtonText }}</v-btn>
+              <v-btn color="success" :disabled="form.disabled" @click="saveProject">
+                {{ saveButtonText }}
+              </v-btn>
             </div>
           </v-card-text>
         </v-card>

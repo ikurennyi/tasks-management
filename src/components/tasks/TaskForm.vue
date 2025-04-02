@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, type Ref } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 import type { RootStore } from '@/store'
 import { ROUTES } from '@/types/routes'
-import { PRIORITIES, STATUSES, type Task } from '@/entities/task'
+import { PRIORITIES, STATUSES } from '@/entities/task'
 import { useTask } from '@/shared/composables/useTask'
-import { useSnack } from '@/shared/composables/useSnack'
+import { useForm } from '@/shared/composables/useForm'
 
 const router = useRouter()
 const store = useStore<RootStore>()
-const { showSnack } = useSnack(store)
 
 const { taskId, projectId } = useRoute().params
 const { action, createdOrUpdatedText, isNewTask, task, taskTitle, saveButtonText, deleteTask } =
@@ -20,20 +19,14 @@ const { action, createdOrUpdatedText, isNewTask, task, taskTitle, saveButtonText
     taskId,
   })
 
-// FORM
-const taskForm: Ref<Task> = ref({ ...task.value })
-const disabled = ref<boolean>(false)
-
-const resetForm = () => {
-  taskForm.value.title = ''
-  taskForm.value.status = STATUSES.PENDING
-  taskForm.value.priority = PRIORITIES.LOW
-  taskForm.value.dueDate = new Date()
-  taskForm.value.description = ''
-}
+const form = useForm({
+  fields: task.value,
+  action: createdOrUpdatedText,
+  type: 'task',
+})
 
 const statusColor = computed(() => {
-  switch (taskForm.value.status) {
+  switch (form.fields.status) {
     case STATUSES.PENDING:
       return 'primary'
     case STATUSES.IN_PROGRESS:
@@ -44,7 +37,7 @@ const statusColor = computed(() => {
 })
 
 const priorityColor = computed(() => {
-  switch (taskForm.value.priority) {
+  switch (form.fields.priority) {
     case PRIORITIES.LOW:
       return 'green'
     case PRIORITIES.MEDIUM:
@@ -62,24 +55,10 @@ const processDelete = () => {
 }
 
 const saveTask = async () => {
-  // NOTE: just a pure validation
-  if (!taskForm.value.title.trim()) {
-    alert('You have to specify at least Title')
-    return
-  }
-  disabled.value = true
-
-  try {
-    const newTask = await store.dispatch(`tasks/${action}`, taskForm.value)
-    resetForm()
-    showSnack({ text: `Task ${newTask.title} was ${createdOrUpdatedText}.` })
+  await form.submit(async (fields) => {
+    await store.dispatch(`tasks/${action}`, fields)
     goBack()
-  } catch (error: unknown) {
-    const text = error instanceof Error ? error.message : String(error)
-    showSnack({ text, type: 'error' })
-  } finally {
-    disabled.value = false
-  }
+  })
 }
 </script>
 
@@ -102,12 +81,12 @@ const saveTask = async () => {
           <v-card-text>
             <div>
               <v-text-field
-                v-model="taskForm.title"
+                v-model="form.fields.title"
                 autofocus
                 label="Title"
                 variant="outlined"
                 data-test="task-form-title"
-                :disabled
+                :disabled="form.disabled"
               ></v-text-field>
             </div>
 
@@ -115,8 +94,8 @@ const saveTask = async () => {
               <div class="">Status</div>
               <div>
                 <v-btn-toggle
-                  v-model="taskForm.status"
-                  :disabled
+                  v-model="form.fields.status"
+                  :disabled="form.disabled"
                   color=""
                   group
                   data-test="task-form-status"
@@ -140,13 +119,13 @@ const saveTask = async () => {
               <div>Priority</div>
               <div>
                 <v-btn-toggle
-                  v-model="taskForm.priority"
+                  v-model="form.fields.priority"
                   color=""
                   group
                   mandatory
                   density="compact"
                   data-test="task-form-priority"
-                  :disabled
+                  :disabled="form.disabled"
                 >
                   <v-btn
                     v-for="p in PRIORITIES"
@@ -163,25 +142,30 @@ const saveTask = async () => {
 
             <div class="d-flex justify-space-between align-center py-4">
               <v-date-input
-                v-model="taskForm.dueDate"
+                v-model="form.fields.dueDate"
                 prepend-icon=""
                 label="Due Date"
                 variant="outlined"
                 data-test="task-form-due-date"
-                :disabled
+                :disabled="form.disabled"
               ></v-date-input>
             </div>
 
             <v-textarea
-              v-model="taskForm.description"
+              v-model="form.fields.description"
               label="Description"
               variant="outlined"
               data-test="task-form-description"
-              :disabled
+              :disabled="form.disabled"
             ></v-textarea>
 
             <div class="d-flex justify-end">
-              <v-btn :disabled color="success" data-test="task-form-submit" @click="saveTask">
+              <v-btn
+                :disabled="form.disabled"
+                color="success"
+                data-test="task-form-submit"
+                @click="saveTask"
+              >
                 {{ saveButtonText }}
               </v-btn>
             </div>
