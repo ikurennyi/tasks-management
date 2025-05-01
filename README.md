@@ -28,7 +28,7 @@
 
 ## <a id="title3">Where and How to View the Project</a>
 
-1. Проект будет доступен:
+1. The project will be available:
    1. As code, [on GitHub](https://github.com/ikurennyi/tasks-management).
    2. As a live version of the website [on GitHub Pages](https://ikurennyi.github.io/tasks-management/)
    3. As a zip archive attached to the email upon completion of the test task
