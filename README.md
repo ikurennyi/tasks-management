@@ -50,7 +50,7 @@
 
 ### <a id="subtitle42">CLI:</a>
 
-1. Start the project: `npm rub dev`
+1. Start the project: `npm run dev`
 2. Build the project: `npm run build`
 3. Check for TypeScript errors: `npm run type-check`
 4. Check for formatting errors: `npm run lint-staged`
